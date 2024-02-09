@@ -9,18 +9,18 @@
   </head>
   <body>
   <div class="container m-5">
-    <form id='form' hx-encoding='multipart/form-data' hx-post='/data'>
+    <form id='form' hx-encoding='multipart/form-data' hx-post='/upload'>
       <div class="form-group">
         <div class="input-group mb-3">
           <div class="custom-file">
-            <input type="file" class="custom-file-input" id="inputGroupFile02">
+            <input type="file" class="custom-file-input" id="inputGroupFile02" name="file">
           </div>
         </div>
       </div>
-      <div class="form-floating">
+      <!-- <div class="form-floating">
         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
         <label for="floatingTextarea2">Blueprint Tags</label>
-      </div>
+      </div> -->
       <button type="submit" class="btn btn-primary mt-2">Send Data</button>
     </form>
   </div>
