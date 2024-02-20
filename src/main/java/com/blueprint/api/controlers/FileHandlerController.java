@@ -22,10 +22,10 @@ public class FileHandlerController {
   public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
     String message = "";
     try {
-        StorageService.save(file);
+      String result = StorageService.save(file);
 
       message = "Uploaded the file successfully: " + file.getOriginalFilename();
-      return ResponseEntity.status(HttpStatus.OK).body(message);
+      return ResponseEntity.status(HttpStatus.OK).body(message + "\n" + result);
     } catch (Exception e) {
       message = "Could not upload the file: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
       return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
