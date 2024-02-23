@@ -1,0 +1,24 @@
+package com.blueprint.api.Service_Implementation;
+
+import java.util.List;
+
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+@Service
+public class FileParsingService {
+    private final List<FileParseInterface> fileParsers;
+
+    public FileParsingService(List<FileParseInterface> fileParsers) {
+        this.fileParsers = fileParsers;
+    }
+
+    public void parseFile(MultipartFile file, String type) {
+        FileParseInterface fileparse = fileParsers.stream() 
+                .filter(t -> t.supports(type))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("Unsupported file type: " + type));
+        fileparse.FileParser(file);
+    }
+}
