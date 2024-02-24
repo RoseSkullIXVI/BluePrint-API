@@ -21,6 +21,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.python:jython-standalone:2.7.2'
 	implementation 'com.opencsv:opencsv:5.9'
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'com.drewnoakes:metadata-extractor:2.19.0'
 }
 
 tasks.named('test') {

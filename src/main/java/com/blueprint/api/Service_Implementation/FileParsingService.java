@@ -14,11 +14,12 @@ public class FileParsingService {
         this.fileParsers = fileParsers;
     }
 
-    public void parseFile(MultipartFile file, String type) {
+    public String parseFile(MultipartFile file, String type) {
         FileParseInterface fileparse = fileParsers.stream() 
                 .filter(t -> t.supports(type))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedOperationException("Unsupported file type: " + type));
-        fileparse.FileParser(file);
+        String keywords = fileparse.FileParser(file);
+        return keywords;
     }
 }

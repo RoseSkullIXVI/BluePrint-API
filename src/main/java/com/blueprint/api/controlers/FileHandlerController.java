@@ -25,8 +25,8 @@ public class FileHandlerController {
         public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
             String fileType = file.getContentType(); // This gets the MIME type of the file
             try {
-                fileParsingService.parseFile(file, fileType);
-                return ResponseEntity.ok("File uploaded and parsed successfully");
+                String keywords = fileParsingService.parseFile(file, fileType);
+                return ResponseEntity.ok(keywords);
             } catch (UnsupportedOperationException e) {
                 return ResponseEntity.badRequest().body("Unsupported file type: " + fileType);
             } catch (Exception e) {
