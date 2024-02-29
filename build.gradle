@@ -23,6 +23,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'com.drewnoakes:metadata-extractor:2.19.0'
 	implementation 'org.apache.poi:poi-ooxml:5.2.5'
+	implementation 'com.bucket4j:bucket4j-core:8.1.0'
 }
 
 tasks.named('test') {
