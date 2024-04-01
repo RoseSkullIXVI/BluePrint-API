@@ -53,10 +53,10 @@
 
       <div class="mt-8">
         <h2 class="font-mono text-xl font-semibold text-gray-800">
-          URL Upload
+          URL 
         </h2>
         <h3 class="font-mono text-base font-semibold text-gray-800">
-          Please ensure the URL you enter is valid and accessible.
+          Please ensure to use the URL at your source.
         </h3>
         <h3 class="font-mono text-sm font-light text-gray-800">
           The URL will be used to create a pipeline for data extraction and processing through your source and the data lake. 
@@ -99,18 +99,6 @@
           <label for="hs-about-hire-us-1" class="font-mono block mb-2 text-sm text-gray-700 font-medium ">JSON Response</label>
           <textarea id="hs-about-hire-us-1" name="hs-about-hire-us-1" rows="4" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none "></textarea>
         </div>
-
-        <form>
-            <div>
-              <label for="hs-input-with-add-on-url" class="font-mono block text-sm text-gray-700 font-medium ">URL</label>
-              <div class="flex rounded-lg shadow-sm">
-                <div class="px-4 inline-flex items-center min-w-fit rounded-s-md border border-e-0 border-gray-200 bg-gray-50 ">
-                  <span class="font-mono text-sm text-gray-500 dark:text-gray-400">http://</span>
-                </div>
-                <input type="text" name="hs-input-with-add-on-url" id="hs-input-with-add-on-url" class="font-mono py-3 px-4 pe-11 block w-full border-gray-200 shadow-sm rounded-e-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none " placeholder="www.example.com">
-              </div>
-            </div>
-        </form>
       </div>
       <!-- End Card -->
     </div>
@@ -119,4 +107,23 @@
   <!-- End Grid -->
 </div>
 <!-- End Data lake -->
+
+<script>
+  document.body.addEventListener('htmx:afterRequest', function(event) {
+    // Check if the request is for the specific form
+    if (event.detail.elt.id === 'form') {
+      // Prevent HTMX from automatically inserting the response
+      event.preventDefault();
+
+      // Use the response detail to get the JSON response
+      const jsonResponse = event.detail.xhr.response;
+
+      // Optionally, parse and stringify the JSON to pretty-print it
+      const prettyJson = JSON.stringify(JSON.parse(jsonResponse), null, 2);
+
+      // Find the textarea by ID and set its value to the pretty JSON
+      document.getElementById('hs-about-hire-us-1').value = prettyJson;
+    }
+  });
+</script>
   </body>

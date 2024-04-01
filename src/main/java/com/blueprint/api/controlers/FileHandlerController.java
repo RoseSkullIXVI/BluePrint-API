@@ -5,12 +5,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.blueprint.api.Blueprint.BlueprintCreation;
 import com.blueprint.api.Service_Implementation.FileParsingService;
 
 import java.time.Duration;
+import java.util.Map;
+
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -18,10 +22,11 @@ import io.github.bucket4j.Refill;
 
 
 @Controller
-@CrossOrigin("http://localhost:8080")
+@CrossOrigin("http://localhost:8081")
 public class FileHandlerController {
  private final FileParsingService fileParsingService;
  private final Bucket bucket;
+ 
  
     public FileHandlerController(FileParsingService fileParsingService) {
         this.fileParsingService = fileParsingService;
@@ -32,12 +37,15 @@ public class FileHandlerController {
 
     }
         @PostMapping("/upload")
-        public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        public ResponseEntity<String> uploadFile(@RequestHeader Map<String,String> headers,@RequestParam("file") MultipartFile file) {
             String fileType = file.getContentType(); // This gets the MIME type of the file
+            String filename = file.getOriginalFilename();
+            BlueprintCreation BlueprintCreation = new BlueprintCreation();
             if (bucket.tryConsume(1)) {
                 try {
                     String keywords = fileParsingService.parseFile(file, fileType);
-                    return ResponseEntity.ok(keywords);
+                    String blueprint = BlueprintCreation.getBlueprint(keywords, headers, filename);
+                    return ResponseEntity.ok(blueprint);
                 } catch (UnsupportedOperationException e) {
                     return ResponseEntity.badRequest().body("Unsupported file type: " + fileType);
                 } catch (Exception e) {
