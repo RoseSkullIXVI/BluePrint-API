@@ -1,39 +1,70 @@
 package com.blueprint.api.Service_Implementation;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.BufferedReader;
+
+import java.io.InputStreamReader;
+
+import java.util.HashSet;
+
+import java.util.Set;
+import java.util.stream.IntStream;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JSONParser implements FileParseInterface{
-    List<String> keys = new ArrayList<>();
-    ObjectMapper mapper = new ObjectMapper();
+    
     
     @Override
     public String FileParser(MultipartFile file) {
-        try(InputStream is = file.getInputStream()) {
-            JsonNode jsonNode = mapper.readTree(is);
-            Iterator<String> iterator = jsonNode.fieldNames();
-            iterator.forEachRemaining(e -> keys.add(e)); 
+        Set<String> finalKeys = new HashSet<>();
+        try {
+            // Convert the MultipartFile's input stream to JSONObject
+            BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            JSONObject rootObject = new JSONObject(sb.toString());
+            
+            // Extract keys
+            findAllKeys(rootObject, finalKeys);
         } catch (Exception e) {
             e.printStackTrace();
-            keys.add("Error parsing file");
+            return "Error processing file: " + e.getMessage();
         }
-       return keys.toString();
         
-    }
+        // Return a string representation of all the keys
+        return finalKeys.toString();
+       
+}
 
     @Override
     public boolean supports(String type) {
         return type.equals("application/json");
     }
 
-    
+
+    private void findAllKeys(Object object, Set<String> finalKeys) {
+        if (object instanceof JSONObject) {
+            JSONObject jsonObject = (JSONObject) object;
+            jsonObject.keySet().forEach(childKey -> {
+                finalKeys.add(childKey);
+                findAllKeys(jsonObject.get(childKey), finalKeys);
+            });
+        } else if (object instanceof JSONArray) {
+            JSONArray jsonArray = (JSONArray) object;
+            IntStream.range(0, jsonArray.length())
+                    .mapToObj(jsonArray::get)
+                    .forEach(o -> findAllKeys(o, finalKeys));
+        }
+    }
+
 }
