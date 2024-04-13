@@ -18,6 +18,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.opencsv:opencsv:5.9'
 	implementation 'org.json:json:20210307'
@@ -25,8 +26,6 @@ dependencies {
 	implementation 'com.drewnoakes:metadata-extractor:2.19.0'
 	implementation 'org.apache.poi:poi-ooxml:5.2.5'
 	implementation 'com.bucket4j:bucket4j-core:8.1.0'
-
-	
 }
 
 tasks.named('test') {
