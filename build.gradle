@@ -18,7 +18,6 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'com.opencsv:opencsv:5.9'
 	implementation 'org.json:json:20210307'

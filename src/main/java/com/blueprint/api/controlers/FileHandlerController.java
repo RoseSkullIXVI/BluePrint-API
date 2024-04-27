@@ -1,14 +1,15 @@
 package com.blueprint.api.controlers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
+// import org.springframework.security.core.annotation.AuthenticationPrincipal;
+// import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.blueprint.api.Blueprint.BlueprintCreation;
@@ -20,10 +21,12 @@ import java.util.Map;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 
-@RestController
+
+@Controller
 @CrossOrigin("http://localhost:8081")
 public class FileHandlerController {
  private final FileParsingService fileParsingService;
@@ -57,5 +60,19 @@ public class FileHandlerController {
             return ResponseEntity.status(429).body("Too many requests");
            
         }
+
+        @PostMapping("/import")
+        public ResponseEntity<String> importing(@RequestParam("endPointUrl") String endPointUrl , @RequestParam("directoryUrl") String directoryUrl ) {
+            try {
+                
+                return ResponseEntity.ok("Importing..." );
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().body("An error occurred while importing" );
+            }           
+            
+        
+        }
+        
+
     }
 
