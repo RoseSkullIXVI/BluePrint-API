@@ -13,16 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.blueprint.api.Blueprint.BlueprintCreation;
+import com.blueprint.api.FolderWatch.DirectoryWatchService;
 import com.blueprint.api.Service_Implementation.FileParsingService;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Map;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 
 
@@ -31,14 +32,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class FileHandlerController {
  private final FileParsingService fileParsingService;
  private final Bucket bucket;
+ private final DirectoryWatchService directoryWatchService;
  
- 
-    public FileHandlerController(FileParsingService fileParsingService) {
+    public FileHandlerController(FileParsingService fileParsingService, DirectoryWatchService directoryWatchService) {
         this.fileParsingService = fileParsingService;
         Bandwidth limit = Bandwidth.classic(20, Refill.greedy(20, Duration.ofMinutes(1)));
         this.bucket = Bucket.builder()
             .addLimit(limit)
             .build();
+        this.directoryWatchService = directoryWatchService;
+  
 
     }
         @PostMapping("/upload")
@@ -62,17 +65,16 @@ public class FileHandlerController {
         }
 
         @PostMapping("/import")
-        public ResponseEntity<String> importing(@RequestParam("endPointUrl") String endPointUrl , @RequestParam("directoryUrl") String directoryUrl ) {
-            try {
-                
-                return ResponseEntity.ok("Importing..." );
-            } catch (Exception e) {
-                return ResponseEntity.internalServerError().body("An error occurred while importing" );
-            }           
-            
-        
+    public ResponseEntity<String> importing(@RequestParam("endPointUrl") String endPointUrl,
+                                           @RequestParam("directoryUrl") String directoryUrl) {
+        try {
+            Path PathdirectoryUrl = Paths.get(directoryUrl);
+            directoryWatchService.watchDirectoryPath(PathdirectoryUrl);
+            return ResponseEntity.ok("Directory watching has started successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("An error occurred while initializing directory watching.");
         }
-        
-
     }
+
+}
 
