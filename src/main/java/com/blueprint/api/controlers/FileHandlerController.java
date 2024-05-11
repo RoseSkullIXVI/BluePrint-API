@@ -27,6 +27,8 @@ import io.github.bucket4j.Refill;
 
 
 
+
+
 @Controller
 @CrossOrigin("http://localhost:8081")
 public class FileHandlerController {
@@ -65,11 +67,15 @@ public class FileHandlerController {
         }
 
         @PostMapping("/import")
-    public ResponseEntity<String> importing(@RequestParam("endPointUrl") String endPointUrl,
-                                           @RequestParam("directoryUrl") String directoryUrl) {
+    public ResponseEntity<String> importing(@RequestParam("Velocity") String Velocity, 
+                                           @RequestParam("TypeofSource") String TypeofSource,
+                                           @RequestParam("TypeofData") String TypeofData,
+                                           @RequestParam("Value") String Value,
+                                           @RequestParam("Veracity") String Veracity,
+                                           @RequestParam("directoryUrl") String directoryUrl){
         try {
             Path PathdirectoryUrl = Paths.get(directoryUrl);
-            directoryWatchService.watchDirectoryPath(PathdirectoryUrl);
+            directoryWatchService.watchDirectoryPath(PathdirectoryUrl, TypeofSource, TypeofData, Value, Veracity, Velocity);
             return ResponseEntity.ok("Directory watching has started successfully.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("An error occurred while initializing directory watching.");

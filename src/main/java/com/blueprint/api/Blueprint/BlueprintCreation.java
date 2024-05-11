@@ -1,5 +1,6 @@
 package com.blueprint.api.Blueprint;
 
+import java.sql.Date;
 import java.util.Map;
 import net.minidev.json.JSONObject;
 
@@ -15,6 +16,7 @@ public class BlueprintCreation {
         String contentLengthString = record.get("content-length").toString();
         String volume = contentVolume(contentLengthString);
         blueprint.put("volume", volume);
+        blueprint.put("timestamp", new Date(System.currentTimeMillis()).getTime());
 
         return blueprint.toString();                
     } 

@@ -22,11 +22,11 @@ public class DirectoryWatchService {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8080").build();
     }
 
-    public void watchDirectoryPath(Path path) {
+    public void watchDirectoryPath(Path path , String TypeofSource , String TypeofData,String  Value, String Veracity,String Velocity) {
         executor.submit(() -> {
          try {
-            // First, handle existing files
-            scanAndSendExistingFiles(path);
+            //handle existing files
+            scanAndSendExistingFiles(path,TypeofSource,TypeofData,Value,Veracity,Velocity);
 
             // Register the directory with the WatchService
             path.register(
@@ -46,7 +46,7 @@ public class DirectoryWatchService {
                     if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
                         Path createdFilePath = path.resolve((Path) event.context());
                         System.out.println("File created: " + createdFilePath);
-                        sendPostRequest(createdFilePath);
+                        sendPostRequest(createdFilePath,TypeofSource,TypeofData,Value,Veracity,Velocity);
                     }
                 }
                 key.reset();
@@ -59,17 +59,24 @@ public class DirectoryWatchService {
 
     }
 
-    private void scanAndSendExistingFiles(Path directory) throws IOException {
+    private void scanAndSendExistingFiles(Path directory, String TypeofSource, String TypeofData, String Value, String Veracity, String Velocity) throws IOException {
         try (Stream<Path> paths = Files.walk(directory, 1)) {
-            paths.filter(Files::isRegularFile).forEach(this::sendPostRequest);
+            paths.filter(Files::isRegularFile)
+                 .forEach(filePath -> sendPostRequest(filePath, TypeofSource, TypeofData, Value, Veracity, Velocity));
         }
     }
+    
 
-    private void sendPostRequest(Path filePath) {
+    private void sendPostRequest(Path filePath, String TypeofSource, String TypeofData, String Value, String Veracity , String Velocity) {
         try {
             FileSystemResource resource = new FileSystemResource(filePath.toFile());
             webClient.post()
                 .uri("/stream")
+                .header("Type-of-Source", TypeofSource)  
+                .header("Type-of-Data", TypeofData)      
+                .header("Value", Value)                  
+                .header("Veracity", Veracity)
+                .header("Velocity", Velocity)            
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData("file", resource))
                 .retrieve()
