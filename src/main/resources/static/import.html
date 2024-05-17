@@ -1,81 +1,96 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Data Lake</title>
     <link rel="stylesheet" href="./css/output.css">
-    <link href="https://unpkg.com/preline/dist/preline.min.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
-  </head>
-  <body class="bg-gray-200 flex items-center justify-center min-h-screen">
-    <div class="max-w-screen-2xl w-auto px-4 py-10 mx-auto">
-        <div class="bg-gray-300 rounded-xl shadow-lg p-4 sm:p-7">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-mono">
-                    Data Source Import
-                </h2>
-                <form id="form" hx-encoding="application/x-www-form-urlencoded" hx-post= "/import" hx-target = "#jsonResponse">
-                    <div class="mt-6 items-center">
-                        <label for="Velocity" class="text-sm font-medium  text-gray-700  font-mono ">
+</head>
+<body class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="mx-auto p-4">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-mono text-center mb-6">
+            Data Source Import
+        </h2>
+        <div class="inline-flex flex-wrap">
+            <div class="bg-white p-6 shadow-lg rounded-lg max-w-md mx-auto m-2 mr-2">
+                <form id="form1" hx-encoding="application/x-www-form-urlencoded" hx-post="/import" hx-target="#jsonResponse">
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="Velocity" class="text-sm font-medium text-gray-700 font-mono">
                             Velocity of Data
                         </label>
-                        <input id="Velocity" name="Velocity" type="text" placeholder="ex. Hourly, Monthly, Yearly" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 " required>
+                        <input id="Velocity" name="Velocity" type="text" placeholder="ex. Hourly, Monthly, Yearly" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
                     </div>
-                    <div class="mt-6 items-center">
-                        <label for="TypeofSource" class="text-sm font-medium  text-gray-700  font-mono ">
-                            Variety - Type of Source
-                        </label>
-                        <input id="TypeofSource" name="TypeofSource" type="text" placeholder="ex. cloud, web, sensors" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 " required>
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="TypeofSource" class="text-sm font-medium text-gray-700 font-mono mr-1">Variety - Type of Source </label>
+                        <input id="TypeofSource" name="TypeofSource" type="text" placeholder="ex. cloud, web, sensors" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
                     </div>
-                    <div class="mt-6 items-center">
-                        <label for="TypeofData" class="text-sm font-medium  text-gray-700  font-mono ">
-                            Variety - Type of Data
-                        </label>
-                        <input id="TypeofData" name="TypeofData" type="text" placeholder="ex. structured , semi-structured , unstructured" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 " required>
+                    <!-- Input: Type of Data -->
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="TypeofData" class="text-sm font-medium text-gray-700 font-mono">Variety - Type of Data</label>
+                        <input id="TypeofData" name="TypeofData" type="text" placeholder="ex. structured, semi-structured, unstructured" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
                     </div>
-                    <div class="mt-6 items-center">
-                        <label for="Value" class="text-sm font-medium  text-gray-700  font-mono ">
-                            Value of Data
-                        </label>
-                        <input id="Value" name="Value" type="text" placeholder="ex. Low , Medium , High" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "required>
+                    <!-- Input: Value -->
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="Value" class="text-sm font-medium text-gray-700 font-mono">Value of Data</label>
+                        <input id="Value" name="Value" type="text" placeholder="ex. Low, Medium, High" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
                     </div>
-                    <div class="mt-6 items-center">
-                        <label for="Veracity" class="text-sm font-medium  text-gray-700  font-mono ">
-                            Veracity of Data
-                        </label>
-                        <input id="Veracity" name="Veracity" type="text" placeholder="ex. Low , Medium , High" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "required>
+                    <!-- Input: Veracity -->
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="Veracity" class="text-sm font-medium text-gray-700 font-mono">Veracity of Data</label>
+                        <input id="Veracity" name="Veracity" type="text" placeholder="ex. Low, Medium, High" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
                     </div>
-                    <div class="mt-6">
-                        <label for="url" class="text-sm font-medium  text-gray-700  font-mono">
-                            Directory URL
-                        </label>
-                        <input id="directoryUrl" name="directoryUrl" type="url" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "required>
+                    <!-- Input: Directory URL -->
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="directoryUrl" class="text-sm font-medium text-gray-700 font-mono">Directory URL</label>
+                        <input id="directoryUrl" name="directoryUrl" type="url" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
                     </div>
-                    <button type="submit" class=" mt-6 font-mono w-full py-3 px-4 inline-flex justify-center items-center text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <!-- Repeat for other fields with similar styling -->
+                    <button type="submit" class="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         Import
                     </button>
                 </form>
-                <div>
-                    <label for="jsonResponse" class="font-mono block mb-2 text-sm text-gray-700 font-medium ">Response</label>
-                    <textarea id="jsonResponse" name="jsonResponse" rows="4" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none "></textarea>
+                <div class="mt-4">
+                    <label for="jsonResponse" class="font-mono block text-sm text-gray-700 font-medium">Response</label>
+                    <pre id="jsonResponse" class="w-full py-3 px-4 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:border-blue-500 focus:ring-blue-500 overflow-auto" style="height: 50px;"></pre>
+                </div>
+            </div>
+            <div class="bg-white p-6 shadow-lg rounded-lg max-w-md mx-auto m-2 ml-2">
+                <form id="form2" hx-encoding="application/x-www-form-urlencoded" hx-post="http://localhost:8080/merge" hx-target="#filesResponse">
+                    <div class="flex justify-between items-center mb-4">
+                        <label for="tags" class="text-sm font-medium text-gray-700 font-mono mr-1">
+                            Level Tags
+                        </label>
+                        <input id="tags" name="tags" type="text" class="py-2 px-3 border border-gray-300 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full py-3 px-4 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Merge Tags
+                    </button>
+                </form>
+                <div class="mt-4">
+                    <label for="filesResponse" class="font-mono block text-sm text-gray-700 font-medium">Blueprints URI</label>
+                    <textarea id="filesResponse" name="filesResponse" rows="10" class="w-full py-3 px-4 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"></textarea>
                 </div>
             </div>
         </div>
-    <form id="form" hx-encoding="application/x-www-form-urlencoded" hx-post= "http://localhost:8080/merge" hx-target = "#filesResponse">
-        <div class="mt-6">
-            <label for="tags" class="text-sm font-medium  text-gray-700  font-mono">
-                Level Tags
-            </label>
-            <input id="tags" name="tags" type="text" class="py-2 px-3 border border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "required>
-        </div>
-        <button type="submit" class=" mt-6 font-mono w-full py-3 px-4 inline-flex justify-center items-center text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Merge Tags
-        </button>
-    </form>
-    <div>
-        <label for="filesResponse" class="font-mono block mb-2 text-sm text-gray-700 font-medium ">Blueprints URI</label>
-        <textarea id="filesResponse" name="filesResponse" rows="4" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none "></textarea>
     </div>
-    </div>
+</body>
+<script>
+    document.body.addEventListener('htmx:afterRequest', function(event) {
+      // Check if the request is for the specific form
+      if (event.detail.elt.id === 'form2') {
+        // Prevent HTMX from automatically inserting the response
+        event.preventDefault();
+  
+        // Use the response detail to get the JSON response
+        const jsonResponse = event.detail.xhr.response;
+  
+        // Optionally, parse and stringify the JSON to pretty-print it
+        const prettyJson = JSON.stringify(JSON.parse(jsonResponse), null, 2);
+  
+        // Find the textarea by ID and set its value to the pretty JSON
+        document.getElementById('filesResponse').value = prettyJson;
+      }
+    });
+  </script>
 </html>
