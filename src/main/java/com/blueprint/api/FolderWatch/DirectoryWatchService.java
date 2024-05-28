@@ -14,49 +14,45 @@ import java.util.stream.Stream;
 public class DirectoryWatchService {
     private WatchService watchService;
     private WebClient webClient;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
+    private final ExecutorService executor = Executors.newCachedThreadPool(); // Updated to cached thread pool
 
     public DirectoryWatchService(WebClient.Builder webClientBuilder) throws IOException {
         this.watchService = FileSystems.getDefault().newWatchService();
         this.webClient = webClientBuilder.baseUrl("http://localhost:8080").build();
     }
 
-    public void watchDirectoryPath(Path path , String TypeofSource , String TypeofData,String  Value, String Veracity,String Velocity) {
+    public void watchDirectoryPath(Path path, String TypeofSource, String TypeofData, String Value, String Veracity, String Velocity) {
         executor.submit(() -> {
-         try {
-            //handle existing files
-            scanAndSendExistingFiles(path,TypeofSource,TypeofData,Value,Veracity,Velocity);
+            try {
+                scanAndSendExistingFiles(path,TypeofSource,TypeofData,Value,Veracity,Velocity);
 
-            // Register the directory with the WatchService
-            path.register(
-                watchService,
-                StandardWatchEventKinds.ENTRY_CREATE,
-                StandardWatchEventKinds.ENTRY_DELETE,
-                StandardWatchEventKinds.ENTRY_MODIFY
-            );
+                path.register(
+                    watchService,
+                    StandardWatchEventKinds.ENTRY_CREATE,
+                    StandardWatchEventKinds.ENTRY_DELETE,
+                    StandardWatchEventKinds.ENTRY_MODIFY
+                );
 
-            System.out.println("Watching path: " + path);
+                System.out.println("Watching path: " + path);
 
-            // Start the infinite loop to watch for directory changes
-            while (true) {
-                WatchKey key = watchService.take();
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    WatchEvent.Kind<?> kind = event.kind();
-                    if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
-                        Path createdFilePath = path.resolve((Path) event.context());
-                        System.out.println("File created: " + createdFilePath);
-                        sendPostRequest(createdFilePath,TypeofSource,TypeofData,Value,Veracity,Velocity);
+                // Start the infinite loop to watch for directory changes
+                while (true) {
+                    WatchKey key = watchService.take();
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        WatchEvent.Kind<?> kind = event.kind();
+                        if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                            Path createdFilePath = path.resolve((Path) event.context());
+                            System.out.println("File created: " + createdFilePath);
+                            sendPostRequest(createdFilePath, TypeofSource, TypeofData, Value, Veracity, Velocity);
+                        }
                     }
+                    key.reset();
                 }
-                key.reset();
-            }
-        } catch (IOException | InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Stopped watching " + path);
+            } catch (IOException | InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Stopped watching " + path);
             }
         });
-
     }
 
     private void scanAndSendExistingFiles(Path directory, String TypeofSource, String TypeofData, String Value, String Veracity, String Velocity) throws IOException {
@@ -65,7 +61,6 @@ public class DirectoryWatchService {
                  .forEach(filePath -> sendPostRequest(filePath, TypeofSource, TypeofData, Value, Veracity, Velocity));
         }
     }
-    
 
     private void sendPostRequest(Path filePath, String TypeofSource, String TypeofData, String Value, String Veracity , String Velocity) {
         try {

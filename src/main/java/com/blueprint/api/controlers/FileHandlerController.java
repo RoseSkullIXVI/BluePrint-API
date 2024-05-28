@@ -1,6 +1,8 @@
 package com.blueprint.api.controlers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 // import org.springframework.security.core.annotation.AuthenticationPrincipal;
 // import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -47,7 +49,10 @@ public class FileHandlerController {
 
     }
         @PostMapping("/upload")
-        public ResponseEntity<String> uploadFile(@RequestHeader Map<String,String> headers,@RequestParam("file") MultipartFile file) {
+        public ResponseEntity<String> uploadFile(@RequestHeader Map<String,String> headers,@RequestParam("file") MultipartFile file,@AuthenticationPrincipal OAuth2User principal) {
+            if (principal == null) {
+                return ResponseEntity.status(403).body("Unauthorized access");
+            }
             String fileType = file.getContentType(); // This gets the MIME type of the file
             String filename = file.getOriginalFilename();
             BlueprintCreation BlueprintCreation = new BlueprintCreation();
@@ -67,12 +72,15 @@ public class FileHandlerController {
         }
 
         @PostMapping("/import")
-    public ResponseEntity<String> importing(@RequestParam("Velocity") String Velocity, 
+    public ResponseEntity<String> importing(@AuthenticationPrincipal OAuth2User principal,@RequestParam("Velocity") String Velocity, 
                                            @RequestParam("TypeofSource") String TypeofSource,
                                            @RequestParam("TypeofData") String TypeofData,
                                            @RequestParam("Value") String Value,
                                            @RequestParam("Veracity") String Veracity,
                                            @RequestParam("directoryUrl") String directoryUrl){
+                                            if (principal == null) {
+                                                return ResponseEntity.status(403).body("Unauthorized access");
+                                            }
         try {
             Path PathdirectoryUrl = Paths.get(directoryUrl);
             directoryWatchService.watchDirectoryPath(PathdirectoryUrl, TypeofSource, TypeofData, Value, Veracity, Velocity);

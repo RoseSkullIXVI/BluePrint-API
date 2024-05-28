@@ -5,6 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Data Lake</title>
     <link rel="stylesheet" href="./css/output.css">
+    <style>
+       /* HTML: <div class="loader"></div> */   
+        .loader {
+        width: 12px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        margin: 10px auto;
+        background: rgb(37 99 235);
+        clip-path: inset(-220%);
+        animation: l28 2s infinite linear;
+        }
+        @keyframes l28 {
+        0%  {box-shadow:0 0 0 0   , 40px 0,-40px 0,0 40px,0 -40px}
+        10% {box-shadow:0 0 0 0   , 12px 0,-40px 0,0 40px,0 -40px}
+        20% {box-shadow:0 0 0 4px , 0px  0,-40px 0,0 40px,0 -40px}
+        30% {box-shadow:0 0 0 4px , 0px  0,-12px 0,0 40px,0 -40px}
+        40% {box-shadow:0 0 0 8px , 0px  0,  0px 0,0 40px,0 -40px}
+        50% {box-shadow:0 0 0 8px , 0px  0,  0px 0,0 12px,0 -40px}
+        60% {box-shadow:0 0 0 12px, 0px  0,  0px 0,0  0px,0 -40px}
+        70% {box-shadow:0 0 0 12px, 0px  0,  0px 0,0  0px,0 -12px}
+        80% {box-shadow:0 0 0 16px, 0px  0,  0px 0,0  0px,0  0px }
+        90%,
+        100%{box-shadow:0 0 0 0   , 40px 0,-40px 0,0 40px,0 -40px}
+        }
+    </style>
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
 </head>
 <body class="flex justify-center items-center min-h-screen bg-gray-100">
@@ -14,7 +39,7 @@
         </h2>
         <div class="inline-flex flex-wrap">
             <div class="bg-white p-6 shadow-lg rounded-lg max-w-md mx-auto m-2 mr-2">
-                <form id="form1" hx-encoding="application/x-www-form-urlencoded" hx-post="/import" hx-target="#jsonResponse">
+                <form id="form1" hx-encoding="application/x-www-form-urlencoded" hx-post="/import" hx-target="#jsonResponse" hx-indicator="#loader1">
                     <div class="flex justify-between items-center mb-4">
                         <label for="Velocity" class="text-sm font-medium text-gray-700 font-mono">
                             Velocity of Data
@@ -56,7 +81,7 @@
                 </div>
             </div>
             <div class="bg-white p-6 shadow-lg rounded-lg max-w-md mx-auto m-2 ml-2">
-                <form id="form2" hx-encoding="application/x-www-form-urlencoded" hx-post="http://localhost:8080/merge" hx-target="#filesResponse">
+                <form id="form2" hx-encoding="application/x-www-form-urlencoded" hx-post="http://localhost:8080/merge" hx-target="#filesResponse" hx-indicator="#loader2">
                     <div class="flex justify-between items-center mb-4">
                         <label for="tags" class="text-sm font-medium text-gray-700 font-mono mr-1">
                             Level Tags
@@ -67,6 +92,7 @@
                         Merge Tags
                     </button>
                 </form>
+                <div id="loader2" class="loader" style="display:none;"></div>
                 <div class="mt-4">
                     <label for="filesResponse" class="font-mono block text-sm text-gray-700 font-medium">Blueprints URI</label>
                     <textarea id="filesResponse" name="filesResponse" rows="10" class="w-full py-3 px-4 border border-gray-300 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"></textarea>
@@ -76,6 +102,16 @@
     </div>
 </body>
 <script>
+    // Listener for form2 to show and hide loader based on HTMX lifecycle
+    document.getElementById('form2').addEventListener('submit', function() {
+        document.getElementById('loader2').style.display = 'block'; // Show loader on submit
+    });
+
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.target.id === 'filesResponse') {
+            document.getElementById('loader2').style.display = 'none'; // Hide loader when response is swapped
+        }
+    });
     document.body.addEventListener('htmx:afterRequest', function(event) {
       // Check if the request is for the specific form
       if (event.detail.elt.id === 'form2') {
