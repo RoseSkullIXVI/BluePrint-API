@@ -84,7 +84,7 @@ public class FileHandlerController {
         try {
             Path PathdirectoryUrl = Paths.get(directoryUrl);
             directoryWatchService.watchDirectoryPath(PathdirectoryUrl, TypeofSource, TypeofData, Value, Veracity, Velocity);
-            return ResponseEntity.ok("Directory watching has started successfully.");
+            return ResponseEntity.ok("Directory watching : " + " " + directoryUrl);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("An error occurred while initializing directory watching.");
         }
